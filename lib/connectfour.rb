@@ -1,12 +1,18 @@
 class Game
 	attr_accessor :board
 	def initialize()
+		# @board = [[nil,nil,nil,nil,nil,nil,nil],
+		# 					[nil,nil,nil,nil,nil,nil,nil],
+		# 					[nil,nil,nil,nil,nil,nil,nil],
+		# 					[nil,nil,nil,nil,nil,nil,nil],
+		# 					[nil,nil,nil,nil,nil,nil,nil],
+		# 					[nil,nil,nil,nil,nil,nil,nil]]
 		@board = [[nil,nil,nil,nil,nil,nil,nil],
 							[nil,nil,nil,nil,nil,nil,nil],
-							[nil,nil,nil,nil,nil,nil,nil],
-							[nil,nil,nil,nil,nil,nil,nil],
-							[nil,nil,nil,nil,nil,nil,nil],
-							[nil,nil,nil,nil,nil,nil,nil]]
+							[nil,nil,nil,nil,"X",nil,nil],
+							[nil,nil,nil,"X",nil,nil,nil],
+							[nil,nil,"X",nil,nil,nil,nil],
+							[nil,"X",nil,nil,nil,nil,nil]]
 							
 	end
 
@@ -28,18 +34,18 @@ class Game
 	end
 
 	def win
-		current = [0,0]
+		current = [0,5]
 		win_recursion(current,false)
 	end
 
-	def win_direction(search, x,y,current, count)
-		current[0] += x
-		current[1] += y
+	def win_direction(search, x,y,row,column, count)
+		column += x 
+		row += y
 		if count == 4
 			return true
-		elsif @board[current[0]][current[1]] == search
+		elsif @board[row][column] == search && row >= 0 && column < 7 && column >= 0
 			count += 1
-			win_direction(search, x,y, current, count)
+			win_direction(search, x,y, row,column, count)
 		else 
 			return false
 		end
@@ -47,6 +53,7 @@ class Game
 
 
 	def win_recursion(current, winner)
+		puts "#{current} #{@board[current[1]][current[0]]}"
 		column = current[0]
 		row = current[1]
 		x = 0
@@ -63,40 +70,40 @@ class Game
 			search = "nothing"
 		end
 		#decides which direction to check
-		if @board[row][column + 1] == search
-			count += 1
-			y += 1
-			winner = win_direction(search,x,y,current,count)
-		end
-		if @board[row + 1][column] == search
+		if (column + 1) > 0 && (column + 1) < 7 && @board[row][column + 1] == search 
 			count += 1
 			x = 1
-			y = 0
-			winner = win_direction(search,x,y,current,count)
+			winner = win_direction(search,x,y,row,column,count)
 		end
-		# if @board[column + 1][row + 1] == search
-		# 	count += 1
-		# 	x = 1
-		# 	y = 1
-		# 	winner = true if win_direction(search,x,y,current,count)
-		# end
-		# if @board[x - 1][y + 1] == search
-		# 	x = -1
-		# 	y = 1
-		# 	count += 1
-		# 	winner = true if win_direction(search,x,y,current,count)
-		# end
+		if row - 1 >= 0 && @board[row - 1][column] == search
+			count += 1
+			x = 0
+			y = -1
+			winner = win_direction(search,x,y,row,column,count)
+		end
+		if @board[row - 1][column + 1] == search
+			count += 1
+			x = 1
+			y = -1
+			winner = true if win_direction(search,x,y,row,column,count)
+		end
+		if @board[row - 1][column + 1] == search
+			x = -1
+			y = -1
+			count += 1
+			winner = true if win_direction(search,x,y,row,column,count)
+		end
 
 		#checks for win or continues to next space
-		puts "#{current} #{search} #{@board[row][column]}"
+		# puts "#{current} #{search} #{@board[row][column]}"
 		if winner != true
-			if current[0] >= 6 && current[1] >= 5
+			if current[0] == 6 && current[1] == 0
 				return false
 			elsif current[0] < 6
 				current[0] += 1
 				win_recursion(current,winner)
 			elsif current[0] == 6
-				current[1] += 1
+				current[1] -= 1
 				current[0] = 0
 				win_recursion(current,winner)
 			end
@@ -127,7 +134,8 @@ end
 
 game = Game.new
 
-game.board[-1] = ["X","X","X","X","X","X","X"]
+# game.board[-1] = ["X","O","X","X","O","X","X"]
+# game.board[0] = ["X","X","X","X","X","X","X"]
 game.display_board
 puts game.win 
 game.display_board
