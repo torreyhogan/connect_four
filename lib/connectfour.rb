@@ -6,7 +6,6 @@ class Game
 							[nil,nil,nil,nil,nil,nil,nil],
 							[nil,nil,nil,nil,nil,nil,nil],
 							[nil,nil,nil,nil,nil,nil,nil],
-							[nil,nil,nil,nil,nil,nil,nil],
 							[nil,nil,nil,nil,nil,nil,nil]]
 							
 	end
